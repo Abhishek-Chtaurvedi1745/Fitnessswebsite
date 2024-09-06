@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitness Tracker</title>
+  <!-- <link rel="stylesheet" href="style.css"> -->
+   <style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input, button {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #f8f8f8;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.stats {
+  margin-top: 20px;
+  text-align: center;
+}
+   </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Fitness Tracker</h1>
+    </header>
+
+    <section class="add-workout">
+      <form id="workout-form">
+        <input type="text" id="workout-name" placeholder="Workout (e.g., Running)" required>
+        <input type="number" id="workout-duration" placeholder="Duration (in minutes)" required>
+        <button type="submit">Add Workout</button>
+      </form>
+    </section>
+
+    <section class="workout-list">
+      <h2>Workouts</h2>
+      <ul id="workouts"></ul>
+    </section>
+
+    <section class="stats">
+      <h2>Total Time Spent: <span id="total-duration">0</span> minutes</h2>
+    </section>
+  </div>
+
+  <script>
+    // Select elements from the DOM
+const workoutForm = document.getElementById('workout-form');
+const workoutNameInput = document.getElementById('workout-name');
+const workoutDurationInput = document.getElementById('workout-duration');
+const workoutsList = document.getElementById('workouts');
+const totalDurationSpan = document.getElementById('total-duration');
+
+let workouts = [];
+
+// Add workout function
+function addWorkout(event) {
+  event.preventDefault();
+
+  const workoutName = workoutNameInput.value;
+  const workoutDuration = parseInt(workoutDurationInput.value);
+
+  if (workoutName && workoutDuration > 0) {
+    const workout = {
+      id: Date.now(),
+      name: workoutName,
+      duration: workoutDuration
+    };
+
+    workouts.push(workout);
+    renderWorkouts();
+    updateTotalDuration();
+
+    // Clear the form inputs
+    workoutNameInput.value = '';
+    workoutDurationInput.value = '';
+  }
+}
+
+// Render workouts in the list
+function renderWorkouts() {
+  workoutsList.innerHTML = '';
+
+  workouts.forEach((workout) => {
+    const li = document.createElement('li');
+    li.innerHTML = `${workout.name} - ${workout.duration} minutes 
+                    <button onclick="deleteWorkout(${workout.id})">Delete</button>`;
+    workoutsList.appendChild(li);
+  });
+}
+
+// Delete workout function
+function deleteWorkout(id) {
+  workouts = workouts.filter((workout) => workout.id !== id);
+  renderWorkouts();
+  updateTotalDuration();
+}
+
+// Update total workout duration
+function updateTotalDuration() {
+  const totalDuration = workouts.reduce((acc, workout) => acc + workout.duration, 0);
+  totalDurationSpan.textContent = totalDuration;
+}
+
+// Add event listener to the form
+workoutForm.addEventListener('submit', addWorkout);
+  </script>
+</body>
+</html>
